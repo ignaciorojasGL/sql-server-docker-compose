@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  db:
+    build:
+      context: ./docker/db/
+      dockerfile: Dockerfile
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "test123"
+      ACCEPT_EULA: "Y"
+    healthcheck:
+      test: sqlcmd -S db1.internal.prod.example.com -U SA -P 'test123' -Q 'select distinct 1 from AdventureWorksDW2017.dbo.DimDate'
+    networks:
+      mynetwork:
+        aliases:
+          - db1.internal.prod.example.com
+
+networks:
+  mynetwork:
+    driver: bridge  
